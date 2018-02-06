@@ -20,10 +20,15 @@ type problem struct {
 }
 
 func readCSV(csvString string) []problem {
+	fileName := csvString
+	if fileName == "" {
+		fileName = "data/problems.csv"
+	}
 
-	f, err := os.Open("problems.csv")
+	f, err := os.Open(fileName)
 	if err != nil {
-		panic(err)
+		fmt.Println("File name unreadable. Opening /data/problems.csv")
+		f, _ = os.Open("data/problems.csv")
 	}
 	defer f.Close()
 
