@@ -2,15 +2,18 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 
 	"os"
 )
 
 func main() {
+	filePtr := flag.String("file", "data/problems.csv", "problems csv file")
+	flag.Parse()
 
 	correctCount := 0
-	problems := readCSV("problems.csv")
+	problems := readCSV(*filePtr)
 
 	for _, problem := range problems {
 		fmt.Println(problem.Question)
@@ -31,12 +34,7 @@ type problem struct {
 }
 
 func readCSV(csvString string) []problem {
-	fileName := csvString
-	if fileName == "" {
-		fileName = "data/problems.csv"
-	}
-
-	f, err := os.Open(fileName)
+	f, err := os.Open(csvString)
 	if err != nil {
 		fmt.Println("File name unreadable. Opening /data/problems.csv")
 		f, _ = os.Open("data/problems.csv")
