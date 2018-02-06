@@ -9,9 +9,20 @@ import (
 
 func main() {
 
+	correctCount := 0
 	problems := readCSV("problems.csv")
-	fmt.Println(problems)
 
+	for _, problem := range problems {
+		fmt.Println(problem.Question)
+		var input string
+		fmt.Scanln(&input)
+
+		if input == problem.Answer {
+			correctCount++
+		}
+	}
+	fmt.Println("Total Number of Questions: ", len(problems))
+	fmt.Println("Correct: ", correctCount)
 }
 
 type problem struct {
