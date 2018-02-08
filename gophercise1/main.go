@@ -4,16 +4,34 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"strconv"
+	"time"
 
 	"os"
 )
 
 func main() {
 	filePtr := flag.String("file", "data/problems.csv", "problems csv file")
+	timerPtr := flag.String("timer", "30", "timer for quiz")
 	flag.Parse()
+
+	timeInSeconds, err := strconv.Atoi(*timerPtr)
+	if err != nil {
+		fmt.Println("Invalid timer input. Defaulting to 30 seconds")
+		timeInSeconds = 30
+	}
 
 	correctCount := 0
 	problems := readCSV(*filePtr)
+
+	timer := time.NewTimer(time.Second * time.Duration(timeInSeconds))
+	defer timer.Stop()
+
+	go func() {
+		<-timer.C
+		printTestResults(len(problems), correctCount)
+		os.Exit(0)
+	}()
 
 	for _, problem := range problems {
 		fmt.Println(problem.Question)
@@ -24,7 +42,11 @@ func main() {
 			correctCount++
 		}
 	}
-	fmt.Println("Total Number of Questions: ", len(problems))
+	printTestResults(len(problems), correctCount)
+}
+
+func printTestResults(numberOfProblems int, correctCount int) {
+	fmt.Println("Total Number of Questions: ", numberOfProblems)
 	fmt.Println("Correct: ", correctCount)
 }
 
